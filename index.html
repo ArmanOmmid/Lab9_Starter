@@ -87,7 +87,22 @@
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "79647d7fd26c4c9d96a2c6f4792b5979"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+
+  <script>
+    class inputError extends Error {
+      constructor(message){
+        super(message);
+        this.name = "inputError";
+      }
+    }
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,13 +110,103 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try{
+        console.time("Evaluation Time");
+        if(isNaN(firstNum) && isNaN(secondNum)) throw new inputError("Operands 1 & 2 must be numbers") 
+        if(isNaN(firstNum)) throw new inputError("Operand 1 must be a number")
+        if(isNaN(secondNum)) throw new inputError("Operand 2 must be a number")
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      }
+      catch (e){
+        console.error(e);
+      }
+      finally{
+        console.timeEnd("Evaluation Time");
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    errorBtns[0].addEventListener("click", (log) => {
+      console.log("Console Log");
+    }); 
+    errorBtns[1].addEventListener("click", (error) => {
+      console.error("Console Error");
+    }); 
+    errorBtns[2].addEventListener("click", (count) => {
+      console.count("Console Count");
+    });
+    errorBtns[3].addEventListener("click", (warn) => {
+      console.warn("Console Warn");
+    }); 
+    errorBtns[4].addEventListener("click", (assert) => {
+      const x = 2;
+      const y = 3;
+      const reason = "x is expected to be equal to y";
+      console.assert(x == 3, {x, y, reason});
+    }); 
+    errorBtns[5].addEventListener("click", (clear) => {
+      console.clear();
+    }); 
+    errorBtns[6].addEventListener("click", (dir) => {
+      console.dir(document);
+    }); 
+    errorBtns[7].addEventListener("click", (dirxml) => {
+      console.dirxml(document);
+    });
+    errorBtns[8].addEventListener("click", (groupStart) => {
+      const label = 'Numbers [1,3]';
+      console.group(label);
+      console.info('1');
+      console.info('2');
+      console.info('3');
+    }); 
+    errorBtns[9].addEventListener("click", (groupEnd) => {
+      const label = 'Numbers [1,3]';
+      console.groupEnd(label);
+    }); 
+    errorBtns[10].addEventListener("click", (table) => {
+      console.table([
+        {
+          first: 'Arman',
+          last: 'Ommid',
+        },
+        {
+          first: 'Azar',
+          last: 'Agahi',
+        },
+        {
+          first: 'Shahram',
+          last: 'Ommid',
+        }
+      ]);
+    }); 
+    errorBtns[11].addEventListener("click", (timerStart) => {
+      console.time();
+    }); 
+    errorBtns[12].addEventListener("click", (timerEnd) => {
+      console.timeEnd();
+    }); 
+    errorBtns[13].addEventListener("click", (trace) => {
+      const lvl1 = () => { lvl2(); };
+      const lvl2 = () => { lvl3(); };
+      const lvl3 = () => { lvl4(); };
+      const lvl4 = () => { console.trace(); };
+      lvl1();
+    }); 
+    errorBtns[14].addEventListener("click", (globalError) => {
+      const c1 = 1;
+      c1 = 2;
+    });
+    window.onerror = function () {
+      console.log("Global Error");
+    };
+
+    TrackJS.track('Testing TrackJS!');
+
   </script>
 </body>
 
